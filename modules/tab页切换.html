@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    
+    section {
+      border: 1px skyblue solid;
+      padding: 10px;
+      margin: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <h2>Tab 页切换</h2>
+    <div x-data="{ tab: 'all' }" x-init="$watch('tab', value => { $refs.indicator.style.transform = 'scale(0.9)'; setTimeout(() => { $refs.indicator.style.transform = 'scale(1)'; }, 150); })">
+      <div class="relative flex gap-2 mb-4 bg-gray-100 p-2 rounded-full inline-flex">
+        <!-- 滑动背景指示器 -->
+        <div x-ref="indicator" class="absolute bg-red-600 rounded-full shadow-md transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]" 
+             :style="`left: ${$refs[tab] ? $refs[tab].offsetLeft + 'px' : '8px'}; width: ${$refs[tab] ? $refs[tab].offsetWidth + 'px' : '60px'}; height: ${$refs[tab] ? $refs[tab].offsetHeight + 'px' : '36px'}; top: 8px;`">
+        </div>
+        
+        <button x-ref="all" @click="tab = 'all'" :class="tab === 'all' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">全部</button>
+        <button x-ref="retail" @click="tab = 'retail'" :class="tab === 'retail' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">零售</button>
+        <button x-ref="manufacturing" @click="tab = 'manufacturing'" :class="tab === 'manufacturing' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">高端制造</button>
+        <button x-ref="3c" @click="tab = '3c'" :class="tab === '3c' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">3C制造</button>
+        <button x-ref="crossborder" @click="tab = 'crossborder'" :class="tab === 'crossborder' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">跨境电商</button>
+        <button x-ref="ecommerce" @click="tab = 'ecommerce'" :class="tab === 'ecommerce' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">电商</button>
+        <button x-ref="partner" @click="tab = 'partner'" :class="tab === 'partner' ? 'text-white' : 'text-gray-700 hover:text-gray-900'" class="relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300">合作伙伴</button>
+      </div>
+      <div class="border p-4 rounded">
+        <div x-show="tab === 'all'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>全部内容</h3>
+          <p>显示所有分类的内容。</p>
+        </div>
+        <div x-show="tab === 'retail'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>零售</h3>
+          <p>零售行业相关内容。</p>
+        </div>
+        <div x-show="tab === 'manufacturing'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>高端制造</h3>
+          <p>高端制造业相关内容。</p>
+        </div>
+        <div x-show="tab === '3c'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>3C制造</h3>
+          <p>3C产品制造相关内容。</p>
+        </div>
+        <div x-show="tab === 'crossborder'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>跨境电商</h3>
+          <p>跨境电商相关内容。</p>
+        </div>
+        <div x-show="tab === 'ecommerce'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>电商</h3>
+          <p>电子商务相关内容。</p>
+        </div>
+        <div x-show="tab === 'partner'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2">
+          <h3>合作伙伴</h3>
+          <p>合作伙伴相关内容。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+
+</html>
