@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .item {
+      width: 300px;
+      height: 400px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      z-index: 1;
+      position: relative;
+      overflow: hidden; /* 隐藏溢出的扩散层 */
+    }
+
+    .item .diff {
+      position: absolute;
+
+      /*
+       top/left 用js动态设置，控制扩散的坐标
+      */
+
+      width: 0;
+      height: 0; /* 初始宽高为0，不可见 */
+      z-index: -1;
+      /* 扩散层背景色 */
+      background-color: #34dbd3; 
+      border-radius: 50px; /* 这里设置成圆角 */
+      transform: translate(-50%, -50%);     /* 以自身中心为锚点进行扩散 */
+      transition: width 0.6s ease-in-out,height 0.6s ease-in-out; /* 设置过渡动画,避免混乱不要用all */
+    }
+
+    /* hover设置 */
+    .item:hover .diff {
+      width: 200%;
+      height: 200%;
+    }
+    .item:hover .item-title,
+    .item:hover .item-text {
+      color:#fff;
+    }
+  </style>
+</head>
+<body>
+  <section class="container">
+
+    <div class="item card-effect">
+      <div class="item-title">TITLE</div>
+      <p class="item-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A natus quis dignissimos laudantium molestiae mollitia quos debitis, rem doloribus dolore eligendi, dolorem accusantium similique aspernatur veniam quo dicta eius quidem.</p>
+      
+      <!-- 扩散层 -->
+      <span class="diff"></span>
+    </div>
+  </section>
+
+  <script src="/assets/js/jquery-3.7.1.min.js"></script>
+  <script>
+
+    /* 
+      mouseenter 事件在定点设备（通常指鼠标）首次移动到元素的激活区域内时，在该元素上触发。
+      mouseleave 事件在定点设备（通常指鼠标）离开元素的激活区域时，在该元素上触发。
+    */
+
+    $('.card-effect')
+      .on('mouseenter',function(e){
+        // $(this).offset()返回一个对象，包含当前元素相对于整个文档（页面）左上角的坐标
+        //console.log($(this).offset()); // {top: 224.5, left: 8}
+        const parentOffset = $(this).offset();
+        
+        const relX = e.pageX - parentOffset.left; // 鼠标左边减去容器的左边，就是鼠标相对于容器的坐标
+        const relY = e.pageY - parentOffset.top;
+
+        // 将获得的坐标设置给扩散层
+        $(this).find('.diff').css({
+          top: relY,
+          left: relX
+        });
+      })
+      .on('mouseleave',function(e){
+        const parentOffset = $(this).offset();
+        const relX = e.pageX - parentOffset.left;
+        const relY = e.pageY - parentOffset.top;
+
+        $(this).find('.diff').css({
+          top: relY,
+          left: relX
+        });
+      });
+  </script>
+</body>
+</html>
