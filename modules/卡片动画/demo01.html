@@ -33,8 +33,9 @@
       width: 0;
       height: 0; /* 初始宽高为0，不可见 */
       z-index: -1;
-      /* 扩散层背景色 */
-      background-color: #34dbd3; 
+      /* 默认扩散层背景色 */
+      /* background-color: #34dbd3;  */
+
       border-radius: 50px; /* 这里设置成圆角 */
       transform: translate(-50%, -50%);     /* 以自身中心为锚点进行扩散 */
       transition: width 0.6s ease-in-out,height 0.6s ease-in-out; /* 设置过渡动画,避免混乱不要用all */
@@ -45,9 +46,12 @@
       width: 200%;
       height: 200%;
     }
-    .item:hover .item-title,
+    /* .item:hover .item-title,
     .item:hover .item-text {
       color:#fff;
+    } */
+    .item:hover {
+      color: #fff;
     }
   </style>
 </head>
@@ -73,6 +77,14 @@
 
     $('.card-effect')
       .on('mouseenter',function(e){
+
+        // 随机颜色值
+        const h = Math.floor(Math.random() * 360);
+        const s = Math.floor(Math.random() * 60)+20;
+        const l = Math.floor(Math.random() * 40)+30;
+        // 进入时随机设置扩散层的背景色
+        $('.diff').css('background-color', `hsl(${h}, ${s}%, ${l}%)`);
+
         // $(this).offset()返回一个对象，包含当前元素相对于整个文档（页面）左上角的坐标
         //console.log($(this).offset()); // {top: 224.5, left: 8}
         const parentOffset = $(this).offset();
