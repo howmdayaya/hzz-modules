@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>折叠导航 - 头部组件</title>
+	<style>
+		:root {
+			/* 波浪层填充色：从浅到深的四个层级，模拟真实水波的层次感 */
+			--path-fill-1: rgba(212, 175, 55, 0.95);
+			/* 第一层：亮金色（最表层） */
+			--path-fill-2: rgba(196, 156, 48, 0.96);
+			/* 第二层：中金色 */
+			--path-fill-3: rgba(120, 90, 20, 0.97);
+			/* 第三层：深金色 */
+			--path-fill-4: rgba(30, 22, 5, 0.99);
+			/* 第四层：近黑色（最底层） */
+
+			/* 文本颜色变量 */
+			--color-title: #ffffff;
+			/* 标题文本 */
+			--color-menu: #f5e6b3;
+			/* 菜单项文本（淡金色） */
+
+			/* 响应式字体大小：clamp() 函数自动适应视口宽度 */
+			/* 参数：最小值 1.25rem，理想值 4vw（视口宽度4%），最大值 2rem */
+			--font-size-menu: clamp(1.25rem, 4vw, 2rem);
+
+			/* 主题色变量 */
+			--theme-bg: #d4af37;
+			/* 主金色，用于按钮、高亮、边框等 */
+			--glass-border: rgba(212, 175, 55, 0.15);
+			/* 玻璃效果边框 */
+
+			/* 头部尺寸变量 */
+			--header-height: 80px;
+			/* 默认头部高度 */
+			--header-bg-scrolled: rgba(10, 10, 10, 0.85);
+			/* 滚动后头部背景色 */
+		}
+
+		/* 
+			==================== 全局重置 ====================
+			清除默认 margin/padding，统一 box-sizing 为 border-box，
+			确保元素尺寸计算包含 padding 和 border，避免布局错位。
+		*/
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* 页面滚动行为：平滑滚动 */
+		html {
+			scroll-behavior: smooth;
+		}
+
+		.on-scroll {
+			overflow: hidden;
+		}
+
+		/* 滚动时过渡效果 */
+
+		/* 
+			页面主体样式：
+			- padding-top 为头部预留空间，避免内容被固定导航栏遮挡
+		*/
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+			background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+			min-height: 100vh;
+			overflow-x: hidden;
+			padding-top: var(--header-height);
+		}
+
+		/* 清除链接默认下划线和颜色 */
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		/* 
+			==================== 头部容器 ====================
+			固定定位在页面顶部，宽度占满视口，
+			z-index 设为 1000 确保在其他内容之上。
+		*/
+		.site-header {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 1000;
+			height: var(--header-height);
+			/* 
+				所有属性变化使用贝塞尔曲线缓动，实现自然过渡
+				可以在浏览器控制台找到这个属性直接调
+			*/
+			transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		}
+
+		/* 
+			滚动后状态：
+			- 高度缩小为原来的 75%（更紧凑）
+			- 添加半透明深色背景
+			- backdrop-filter 实现毛玻璃效果（模糊背景）
+			- 添加底部边框和阴影增强层次感
+		*/
+		.site-header.is-scrolled {
+			height: calc(var(--header-height) * 0.75);
+			background: var(--header-bg-scrolled);
+			backdrop-filter: blur(20px);
+			-webkit-backdrop-filter: blur(20px);
+			border-bottom: 1px solid var(--glass-border);
+			box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+		}
+
+		/* 
+			菜单打开状态：
+			移除背景和模糊效果，让波浪动画不受遮挡。
+			!important 确保优先级高于 .is-scrolled。
+		*/
+		.site-header.is-menu-open {
+			background: transparent !important;
+			backdrop-filter: blur(0px) !important;
+		}
+
+		/* 
+			头部内部布局容器：
+			- max-width 限制最大宽度（大屏友好）
+			- flex 布局实现 Logo 与按钮两端对齐
+			- padding 使用 clamp() 实现响应式内边距
+		*/
+		.header-wrap {
+			width: 100%;
+			max-width: 1400px;
+			height: 100%;
+			margin: 0 auto;
+			padding: 0 clamp(20px, 5vw, 60px);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		/* 
+			==================== Logo 样式 ====================
+			- 大写字母 + 字间距加宽，呈现高端品牌感
+			- hover 时底部出现金色下划线（通过 ::after 伪元素实现）
+		*/
+		.logo {
+			font-size: 1.5rem;
+			font-weight: 700;
+			letter-spacing: 0.15em;
+			color: var(--color-title);
+			position: relative;
+			z-index: 1001;
+			transition: all 0.3s ease;
+			text-transform: uppercase;
+		}
+
+		/* Logo 下划线动画初始状态 */
+		.logo::after {
+			content: '';
+			position: absolute;
+			bottom: -4px;
+			left: 0;
+			width: 0;
+			height: 2px;
+			background: linear-gradient(90deg, var(--theme-bg), transparent);
+			transition: width 0.4s ease;
+		}
+
+		/* hover 时下划线展开 */
+		.logo:hover::after {
+			width: 100%;
+		}
+
+		/* 
+			Logo 文字渐变效果：
+			使用 background-clip: text 将渐变背景裁剪为文字形状，
+			配合 -webkit-text-fill-color: transparent 实现文字渐变。
+		*/
+		.logo span {
+			background: linear-gradient(135deg, #d4af37 0%, #f5e6b3 50%, #d4af37 100%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		/* 
+			==================== 汉堡菜单按钮 ====================
+			- 圆形边框按钮，点击切换为关闭图标
+			- 使用 flex-col 布局三条横线
+			- hover 时边框变金色 + 背景高亮
+		*/
+		.hamburger {
+			width: 44px;
+			height: 44px;
+			position: relative;
+			z-index: 1001;
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 6px;
+			background: transparent;
+			border: 1px solid var(--glass-border);
+			border-radius: 50%;
+			transition: all 0.3s ease;
+			padding: 0;
+		}
+
+		.hamburger:hover {
+			border-color: var(--theme-bg);
+			background: rgba(212, 175, 55, 0.1);
+		}
+
+		/* 菜单打开状态：边框变金色 */
+		.hamburger.is-opened-navi {
+			border-color: var(--theme-bg);
+		}
+
+		/* 
+			汉堡按钮内部三条横线：
+			默认显示为三条平行的横线
+			打开状态下通过 transform 变形为「×」图标
+		*/
+		.hamburger-line {
+			display: block;
+			width: 20px;
+			height: 2px;
+			background: var(--color-menu);
+			border-radius: 2px;
+			/* 弹性缓动函数：产生轻微的过冲效果 */
+			transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+			transform-origin: center;
+		}
+
+		/* 第一条线：下移 + 顺时针旋转 45° → 变成「×」的上半部分 */
+		.hamburger.is-opened-navi .hamburger-line:nth-child(1) {
+			transform: translateY(8px) rotate(45deg);
+			background: var(--theme-bg);
+		}
+
+		/* 第二条线：缩小至消失（为其他两条线让位） */
+		.hamburger.is-opened-navi .hamburger-line:nth-child(2) {
+			opacity: 0;
+			transform: scaleX(0);
+		}
+
+		/* 第三条线：上移 + 逆时针旋转 45° → 变成「×」的下半部分 */
+		.hamburger.is-opened-navi .hamburger-line:nth-child(3) {
+			transform: translateY(-8px) rotate(-45deg);
+			background: var(--theme-bg);
+		}
+
+		/* 
+			==================== 全局导航菜单 ====================
+			- 固定定位全屏覆盖
+			- 默认 pointer-events: none 防止误触
+			- 菜单打开时通过 JS 切换为 auto
+		*/
+		.global-menu {
+			position: fixed;
+			inset: 0;
+			width: 100%;
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			pointer-events: none;
+			z-index: 999;
+			overflow: hidden;
+		}
+
+		/* 菜单项容器：垂直排列，居中显示 */
+		.global-menu__wrap {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+			position: relative;
+			z-index: 1002;
+			padding: 2rem;
+		}
+
+		/* 
+			单个菜单项样式：
+			- 默认隐藏：opacity: 0 + 向上偏移 40px + 缩放 0.95
+			- 过渡动画使用弹性缓动，产生「回弹」效果
+		*/
+		.global-menu__item {
+			color: var(--color-menu);
+			font-size: var(--font-size-menu);
+			font-weight: 500;
+			letter-spacing: 0.05em;
+			opacity: 0;
+			transform: translateY(-40px) scale(0.95);
+			pointer-events: none;
+			display: block;
+			position: relative;
+			padding: 0.5em 1em;
+			transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+		}
+
+		/* 菜单项底部装饰线（hover 时展开） */
+		.global-menu__item::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 0;
+			height: 2px;
+			background: linear-gradient(90deg, transparent, var(--theme-bg), transparent);
+			transition: width 0.3s ease;
+		}
+
+		.global-menu__item:hover {
+			color: var(--theme-bg);
+		}
+
+		.global-menu__item:hover::after {
+			width: 60%;
+		}
+
+		/* 
+			菜单项打开状态：
+			- 显示：opacity: 1 + 回到原位 + 缩放恢复
+			- 启用点击事件
+		*/
+		.global-menu__item.is-opened {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+			pointer-events: auto;
+		}
+
+		/* 
+			菜单项交错动画延迟：
+			关闭时延迟较大（0.7s ~ 0.85s），打开时延迟较小（0.3s ~ 0.54s），
+			形成「快速涌入，缓慢退出」的视觉节奏。
+		*/
+		.global-menu__item:nth-of-type(1) {
+			transition-delay: 0.7s;
+		}
+
+		.global-menu__item:nth-of-type(2) {
+			transition-delay: 0.75s;
+		}
+
+		.global-menu__item:nth-of-type(3) {
+			transition-delay: 0.8s;
+		}
+
+		.global-menu__item:nth-of-type(4) {
+			transition-delay: 0.85s;
+		}
+
+		.global-menu__item.is-opened:nth-of-type(1) {
+			transition-delay: 0.3s;
+		}
+
+		.global-menu__item.is-opened:nth-of-type(2) {
+			transition-delay: 0.38s;
+		}
+
+		.global-menu__item.is-opened:nth-of-type(3) {
+			transition-delay: 0.46s;
+		}
+
+		.global-menu__item.is-opened:nth-of-type(4) {
+			transition-delay: 0.54s;
+		}
+
+		/* 
+			==================== 波浪遮罩层 ====================
+			核心动画原理：
+			1. 使用 4 个 .wave-layer div 作为波浪层
+			2. 每层通过 clip-path: polygon() 定义不同的波浪形状
+			3. 默认 transform: translateY(100%) 隐藏在屏幕下方
+			4. 菜单打开时 translateY(0) 滑入屏幕
+			5. 各层 transition-delay 不同，形成从底部向上的波浪涌动效果
+		*/
+		/* 
+			遮罩层只覆盖视口下方 90%，顶部 10% 保留背景可见。
+			top: 10vh 定位起点，height: 90vh 容器高度。 
+			top+height=100vh，覆盖整个屏幕。
+			或者遮罩层直接占满屏幕，但是会挡住header，或者让header在最高层，背景盖住遮罩？
+		*/
+		.wave-overlays {
+			position: fixed;
+			top: 10vh;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 90vh;
+			pointer-events: none;
+			z-index: 998;
+		}
+
+		.wave-overlays.is-opened {
+			pointer-events: auto;
+		}
+
+		/* 波浪层基础样式：从屏幕下方滑入，0.8s 缓动 */
+		.wave-layer {
+			position: absolute;
+			inset: 0;
+			height: 100%;
+			transform: translateY(100%);
+			/* transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); */
+			transition: transform 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+		}
+
+		/* 打开时各层同时向上滑动 */
+		.wave-overlays.is-opened .wave-layer {
+			transform: translateY(0);
+		}
+
+		/* 
+			四层波浪形状：
+			clip-path: polygon() 参数含义：
+			- 每个波浪由多个百分比坐标点组成
+			- 顶部边缘（第3个点起）定义不规则波浪轮廓
+			- 底部两个点固定在 (0%, 100%) 和 (100%, 100%)
+			https://www.jiangweishan.com/tool/clippy/ 这里画现状
+		*/
+		.wave-layer:nth-child(1) {
+			background: var(--path-fill-1);
+			clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 83% 5%, 67% 0%, 50% 8%, 33% 0%, 17% 5%, 0% 0%);
+			-webkit-clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 83% 5%, 67% 0%, 50% 8%, 33% 0%, 17% 5%, 0% 0%);
+			transition-delay: 0s;
+		}
+
+		.wave-layer:nth-child(2) {
+			background: var(--path-fill-2);
+			clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 80% 8%, 60% 2%, 40% 10%, 20% 3%, 0% 7%);
+			-webkit-clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 80% 8%, 60% 2%, 40% 10%, 20% 3%, 0% 7%);
+			transition-delay: 0.1s;
+		}
+
+		.wave-layer:nth-child(3) {
+			background: var(--path-fill-3);
+			clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 85% 4%, 65% 1%, 45% 9%, 25% 2%, 5% 6%);
+			-webkit-clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 85% 4%, 65% 1%, 45% 9%, 25% 2%, 5% 6%);
+			transition-delay: 0.2s;
+		}
+
+		.wave-layer:nth-child(4) {
+			background: var(--path-fill-4);
+			clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 82% 6%, 62% 3%, 42% 11%, 22% 4%, 2% 8%);
+			-webkit-clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 82% 6%, 62% 3%, 42% 11%, 22% 4%, 2% 8%);
+			transition-delay: 0.3s;
+		}
+
+		/* 
+			关闭时反向延迟：
+			与打开时相反，最底层最先退出，形成「退潮」效果。
+		*/
+		.wave-overlays:not(.is-opened) .wave-layer:nth-child(1) {
+			transition-delay: 0.3s;
+		}
+
+		.wave-overlays:not(.is-opened) .wave-layer:nth-child(2) {
+			transition-delay: 0.2s;
+		}
+
+		.wave-overlays:not(.is-opened) .wave-layer:nth-child(3) {
+			transition-delay: 0.1s;
+		}
+
+		.wave-overlays:not(.is-opened) .wave-layer:nth-child(4) {
+			transition-delay: 0s;
+		}
+
+		/* 
+			==================== 文字内容区域 ====================
+		*/
+		.demo-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 4rem 2rem;
+		}
+
+		.demo-content h1 {
+			font-size: clamp(2.5rem, 6vw, 4.5rem);
+			font-weight: 700;
+			background: linear-gradient(135deg, #fff 0%, #d4af37 50%, #fff 100%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+			margin-bottom: 1.5rem;
+			line-height: 1.1;
+		}
+
+		.demo-content p {
+			font-size: 1.125rem;
+			line-height: 1.8;
+			color: rgba(255, 255, 255, 0.75);
+			max-width: 700px;
+			margin-bottom: 1rem;
+		}
+
+		.demo-section {
+			min-height: 60vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		/* 
+			==================== 响应式设计 ====================
+			- 768px 以下：缩小头部高度、Logo 字号、内边距
+			- 移动端优化，确保组件在小屏幕上可用
+		*/
+		@media (max-width: 768px) {
+			:root {
+				--header-height: 70px;
+			}
+
+			.header-wrap {
+				padding: 0 20px;
+			}
+
+			.logo {
+				font-size: 1.25rem;
+			}
+
+			.global-menu__wrap {
+				gap: 0.75rem;
+			}
+
+			.demo-content {
+				padding: 2rem 1.25rem;
+			}
+		}
+
+		/* 
+			==================== 无障碍支持 ====================
+			可能有客户不需要过多的动画，添加条件选择
+		*/
+		@media (prefers-reduced-motion: reduce) {
+
+			*,
+			*::before,
+			*::after {
+				animation-duration: 0.01ms !important;
+				transition-duration: 0.01ms !important;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<header class="site-header" id="header">
+		<div class="header-wrap">
+			<!-- Logo-->
+			<a href="#" class="logo">
+				<span>折叠导航</span> HZZ
+			</a>
+
+			<!--汉堡菜单按钮-->
+			<button class="hamburger" id="menu-toggle" aria-label="切换导航菜单" aria-expanded="false">
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+			</button>
+		</div>
+
+		<!--全局导航菜单-->
+		<nav class="global-menu" id="global-menu">
+			<div class="global-menu__wrap">
+				<a href="#" class="global-menu__item">Home</a>
+				<a href="#" class="global-menu__item">Photography</a>
+				<a href="#" class="global-menu__item">About</a>
+				<a href="#" class="global-menu__item">Contact</a>
+			</div>
+		</nav>
+
+		<!-- 
+			波浪遮罩层：
+			- 4 个 .wave-layer 叠层，每个有不同 clip-path 形状
+			- 默认隐藏在屏幕下方（transform: translateY(100%)）
+			- 通过添加 .is-opened 类触发 CSS 动画
+		-->
+		<div class="wave-overlays" id="wave-overlays">
+			<div class="wave-layer"></div>
+			<div class="wave-layer"></div>
+			<div class="wave-layer"></div>
+			<div class="wave-layer"></div>
+		</div>
+	</header>
+
+
+	<main class="demo-content">
+		<section class="demo-section">
+			<h1>折叠导航</h1>
+			<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero assumenda rem quaerat consequuntur, ducimus
+				dignissimos ut consequatur quod, culpa, ea laudantium voluptatum ab rerum cumque dolores quae. Nisi, sunt culpa.
+			</p>
+			<p>点击右上角的菜单按钮，即可查看导航的交互效果。</p>
+		</section>
+		<section class="demo-section">
+			<h1>折叠导航</h1>
+			<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero assumenda rem quaerat consequuntur, ducimus
+				dignissimos ut consequatur quod, culpa, ea laudantium voluptatum ab rerum cumque dolores quae. Nisi, sunt culpa.
+			</p>
+			<p>点击右上角的菜单按钮，即可查看导航的交互效果。</p>
+		</section>
+	</main>
+
+	<script src="/assets/js/jquery-3.7.1.min.js"></script>
+	<script>
+		// DOM 加载完成后执行
+		$(function () {
+			// 获取所有需要操作的 DOM 元素
+			const header = $('header');              // 头部容器
+			const menuToggle = $('#menu-toggle');     // 菜单按钮
+			const gNavItems = $('.global-menu__item');  // 所有菜单项
+			const waveOverlays = $('#wave-overlays');  // 波浪遮罩层
+
+
+			// console.log(gNavItems)
+
+			/**
+			 * 滚动事件监听：
+			 * - 滚动超过 50px 时添加 .is-scrolled 类
+			 * - CSS 通过该类切换毛玻璃效果和阴影
+			 */
+			$(window).on('scroll', () => {
+				header.toggleClass('is-scrolled', window.pageYOffset > 50);
+			});
+
+			/**
+			 * 菜单开关控制函数：
+			 * @param {boolean} [open] - 可选参数，指定打开(true)或关闭(false)
+			 *                           不传参时自动切换当前状态
+			 * 
+			 * 同时更新 5 个状态：
+			 * 1. 波浪遮罩层 (.wave-overlays)
+			 * 2. 汉堡按钮图标 (.hamburger)
+			 * 3. 头部容器背景 (.site-header)
+			 * 4. 无障碍属性 (aria-expanded)
+			 * 5. 菜单项显示 (.global-menu__item)
+			 */
+			function toggleMenu(open) {
+				// 计算目标状态：如果未传参则取反当前状态
+				const isOpen = open ?? !waveOverlays.hasClass('is-opened');
+
+				// 同步更新所有相关元素的状态
+				waveOverlays.toggleClass('is-opened', isOpen);          // 波浪层动画
+				menuToggle.toggleClass('is-opened-navi', isOpen);      // 按钮图标变形
+				header.toggleClass('is-menu-open', isOpen);            // 头部背景透明
+				menuToggle.attr('aria-expanded', isOpen);           // 无障碍状态
+				$('body').toggleClass('on-scroll', isOpen);      // 禁止/允许页面滚动
+				gNavItems.toggleClass('is-opened', isOpen);  // 菜单项动画
+			}
+
+			/**
+			 * 事件绑定：
+			 * 1. 按钮点击 → 切换菜单
+			 * 2. ESC 键 → 关闭菜单（键盘无障碍）
+			 * 3. 菜单项点击 → 关闭菜单并导航
+			 */
+			menuToggle.on('click', () => toggleMenu());
+
+			// 键盘支持：按 ESC 键关闭已打开的菜单，有些客户可能需要这个功能
+			$(document).on('keyup', (e) => {
+				if (e.key === 'Escape' && waveOverlays.hasClass('is-opened')) {
+					toggleMenu(false);
+				}
+			});
+
+			// 菜单项点击：演示用，关闭菜单后可添加导航逻辑
+			gNavItems.on('click', (e) => {
+				e.preventDefault();  // 阻止默认跳转
+				if (waveOverlays.hasClass('is-opened')) {
+					toggleMenu(false);  // 先关闭菜单
+					// TODO: 这里可以添加实际的页面跳转逻辑                                  
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
