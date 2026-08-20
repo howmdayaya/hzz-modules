@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HZZ · 笔记</title>
+   <style>
+        /* ===== 默认重置 ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fafaf8;
+            --bg-card: #ffffff;
+            --text-primary: #1c1c1a;
+            --text-secondary: #5a5a56;
+            --text-muted: #9a9a94;
+            --border-light: #ecece8;
+            --accent: #c0392b;
+            --accent-subtle: #f0e6e4;
+            --radius: 0px;
+            --transition: 0.25s ease;
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Source Serif 4', serif;
+            --max-width: 780px;
+            --side-padding: 24px;
+        }
+
+        html {
+            /* ===== 平滑滚动 ===== */
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 0 var(--side-padding);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ::selection {
+            background: var(--accent-subtle);
+            color: var(--text-primary);
+        }
+
+        /* ===== 滚动条重置 ===== */
+        /* 对着mdn文档修改了滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 20px;
+        }
+
+
+        /* ===== 容器 ===== */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 0;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            padding: 56px 0 40px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 56px;
+        }
+
+        .header__inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__mark {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .logo:hover .logo__mark {
+            transform: scale(1.6);
+        }
+
+        .nav {
+            display: flex;
+            gap: 28px;
+            font-size: 14px;
+            font-weight: 450;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        .nav a {
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .nav a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav a.active {
+            color: var(--text-primary);
+        }
+
+        .nav a.active::after {
+            width: 100%;
+        }
+
+        /* ===== 首页 ===== */
+        .hero {
+            margin-bottom: 64px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .hero__sub {
+            font-size: 13px;
+            font-weight: 450;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(34px, 5vw, 52px);
+            font-weight: 500;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        /* ===== 分区 ===== */
+        .section {
+            margin-bottom: 72px;
+        }
+
+        .section__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 28px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section__title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+        }
+
+        .section__more {
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .section__more:hover {
+            color: var(--text-primary);
+        }
+
+        /* ===== 文章列表 ===== */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .post-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px 32px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+            align-items: baseline;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-item:hover .post__title {
+            color: var(--accent);
+        }
+
+        .post__title {
+            font-size: 17px;
+            font-weight: 450;
+            color: var(--text-primary);
+            transition: var(--transition);
+            line-height: 1.5;
+        }
+
+        .post__meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        /* ===== NOTE / 笔记卡片 ===== */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .note-card {
+            background: var(--bg-card);
+            padding: 28px 28px 24px;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .note-card:hover {
+            border-color: var(--text-muted);
+        }
+
+        .note-card__tag {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .note-card h3 {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .note-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .note-card__meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .note-card__meta .dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            display: inline-block;
+        }
+
+        /* ===== 特色笔记卡片 ===== */
+        .note-featured {
+            background: var(--bg-card);
+            padding: 36px 40px 32px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .note-featured:hover {
+            border-color: var(--text-muted);
+        }
+
+        .note-featured__label {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .note-featured h2 {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .note-featured p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 600px;
+        }
+
+        .note-featured__meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* ===== ABOUT / 关于 ===== */
+        .about {
+            padding: 48px 0 24px;
+            border-top: 1px solid var(--border-light);
+            margin-top: 24px;
+        }
+
+        .about__inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+        }
+
+        .about h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .about p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 400px;
+        }
+
+        .about a {
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1px;
+        }
+
+        .about a:hover {
+            border-bottom-color: var(--text-primary);
+        }
+
+        .about__links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .about__links a {
+            font-size: 15px;
+            color: var(--text-secondary);
+            border-bottom: none;
+            padding: 4px 0;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .about__links a:hover {
+            color: var(--text-primary);
+            padding-left: 6px;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            padding: 40px 0 56px;
+            border-top: 1px solid var(--border-light);
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer__social {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer__social a {
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .footer__social a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ===== 响应式布局 ===== */
+        @media (max-width: 820px) {
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .note-featured {
+                padding: 28px 24px 24px;
+            }
+
+            .about__inner {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .post-item {
+                grid-template-columns: 1fr;
+                gap: 4px;
+                padding: 16px 0;
+            }
+
+            .post__meta {
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .header {
+                padding: 36px 0 28px;
+                margin-bottom: 40px;
+            }
+
+            .hero {
+                margin-bottom: 48px;
+                padding-bottom: 32px;
+            }
+
+            .section {
+                margin-bottom: 48px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --side-padding: 16px;
+            }
+
+            .header__inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .nav {
+                gap: 20px;
+                font-size: 13px;
+                flex-wrap: wrap;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .note-featured h2 {
+                font-size: 22px;
+            }
+
+            .note-card {
+                padding: 20px 18px 18px;
+            }
+
+            .note-featured {
+                padding: 20px 18px 20px;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+
+        /* ===== 排版微调 ===== */
+        .text-serif {
+            font-family: var(--font-serif);
+        }
+
+        .mt-1 {
+            margin-top: 8px;
+        }
+        .mt-2 {
+            margin-top: 16px;
+        }
+        .mb-1 {
+            margin-bottom: 8px;
+        }
+        .mb-2 {
+            margin-bottom: 16px;
+        }
+
+        /* 阅读体验优化 */
+        .post-item .post__title {
+            font-weight: 450;
+        }
+
+        .note-card h3 {
+            font-weight: 500;
+        }
+
+        /* 小装饰：分隔线 */
+        .divider-light {
+            border: none;
+            border-top: 1px solid var(--border-light);
+            margin: 48px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 头部 ===== -->
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="#" class="logo">
+                    <span class="logo__mark"></span>
+                    HZZ · 笔记
+                </a>
+                <nav class="nav">
+                    <a href="#" class="active">全部</a>
+                    <a href="#">阅读</a>
+                    <a href="#">思考</a>
+                    <a href="#">随笔</a>
+                    <a href="#">关于</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== 主体 ===== -->
+    <main class="container">
+
+        <!-- ===== 首页 ===== -->
+        <section class="hero">
+            <div class="hero__sub">—— 此刻的思考</div>
+            <h1>Lorem Ipsum<br />Dolor Sit Amet</h1>
+            <p>
+                Consectetur adipiscing elit sed do eiusmod tempor<br />
+                incididunt ut labore et dolore magna aliqua.
+            </p>
+        </section>
+
+        <!-- ===== 精选笔记 ===== -->
+        <section class="section">
+            <div class="section__header">
+                <span class="section__title">精选</span>
+                <a href="#" class="section__more">查看全部 →</a>
+            </div>
+
+            <div class="note-featured">
+                <span class="note-featured__label">阅读 · 2026.08</span>
+                <h2>Lorem Ipsum —— Dolor Sit Amet</h2>
+                <p>
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                </p>
+                <div class="note-featured__meta">
+                    <span>8 分钟阅读</span>
+                    <span>·</span>
+                    <span>笔记</span>
+                </div>
+            </div>
+
+            <div class="notes-grid">
+                <div class="note-card">
+                    <span class="note-card__tag">思考</span>
+                    <h3>Sed ut perspiciatis unde omnis</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+                    <div class="note-card__meta">
+                        <span>2026.08.19</span>
+                        <span class="dot"></span>
+                        <span>3 分钟</span>
+                    </div>
+                </div>
+                <div class="note-card">
+                    <span class="note-card__tag">随笔</span>
+                    <h3>Nemo enim ipsam voluptatem</h3>
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+                    <div class="note-card__meta">
+                        <span>2026.08.17</span>
+                        <span class="dot"></span>
+                        <span>2 分钟</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 文章列表 ===== -->
+        <section class="section">
+            <div class="section__header">
+                <span class="section__title">最近文章</span>
+                <a href="#" class="section__more">全部文章 →</a>
+            </div>
+
+            <div class="post-list">
+                <a href="#" class="post-item">
+                    <span class="post__title">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                    <span class="post__meta">2026.08.18</span>
+                </a>
+                <a href="#" class="post-item">
+                    <span class="post__title">Sed do eiusmod tempor incididunt ut labore</span>
+                    <span class="post__meta">2026.08.14</span>
+                </a>
+                <a href="#" class="post-item">
+                    <span class="post__title">Duis aute irure dolor in reprehenderit</span>
+                    <span class="post__meta">2026.08.10</span>
+                </a>
+                <a href="#" class="post-item">
+                    <span class="post__title">Excepteur sint occaecat cupidatat non proident</span>
+                    <span class="post__meta">2026.08.06</span>
+                </a>
+                <a href="#" class="post-item">
+                    <span class="post__title">Sunt in culpa qui officia deserunt mollit anim</span>
+                    <span class="post__meta">2026.08.02</span>
+                </a>
+                <a href="#" class="post-item">
+                    <span class="post__title">Est et dolore magna aliqua enim ad minim</span>
+                    <span class="post__meta">2026.07.28</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== 关于 ===== -->
+        <section class="about">
+            <div class="about__inner">
+                <div>
+                    <h3>关于这里</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Sed do eiusmod tempor incididunt ut labore et dolore magna.
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                    </p>
+                </div>
+                <div>
+                    <h3>找到我</h3>
+                    <div class="about__links">
+                        <a href="#">howmdayaya@outlook.com</a>
+                        <a href="#">阅读清单</a>
+                        <a href="#">写作笔记</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 底部 ===== -->
+        <footer class="footer">
+            <p>© 2026 HZZ · 用文字记录日常</p>
+            <div class="footer__social">
+                <a href="https://github.com/howmdayaya">GitHub</a>
+            </div>
+        </footer>
+
+    </main>
+
+</body>
+</html>
