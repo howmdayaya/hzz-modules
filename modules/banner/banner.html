@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>轮播图 - 原理复习</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #b9b9b9;
+            font-family: sans-serif;
+        }
+
+        /* 轮播容器 - 相对定位，用于放置按钮和指示器 */
+        .banner {
+            position: relative;
+            width: min(1200px, 90vw);
+            overflow: hidden;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* 轨道 - 横向排列所有幻灯片 */
+        .banner-track {
+            display: flex;
+            position: relative;
+        }
+
+        /* 幻灯片 - 响应式宽高 */
+        .banner-slide {
+            flex: 0 0 auto;
+            width: min(1200px, 90vw);
+            aspect-ratio: 2 / 1;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+
+        /* 左右按钮 - 绝对定位，简单样式 */
+        .banner-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .banner-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        .banner-btn.prev {
+            left: 10px;
+        }
+        .banner-btn.next {
+            right: 10px;
+        }
+
+        /* 指示器（小圆点） - 水平居中，简单圆点 */
+        .banner-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        .banner-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        .banner-dot.active {
+            background: #fff;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="banner" id="banner">
+    <!-- 轨道 -->
+    <div class="banner-track" id="bannerTrack">
+        <div class="banner-slide">
+          <img src="https://picsum.photos/id/400/1200/600" alt="">
+        </div>
+        <div class="banner-slide">
+          <img src="https://picsum.photos/id/401/1200/600" alt="">
+        </div>
+        <div class="banner-slide">
+          <img src="https://picsum.photos/id/402/1200/600" alt="">
+        </div>
+        <div class="banner-slide">
+          <img src="https://picsum.photos/id/403/1200/600" alt="">
+        </div>
+        <div class="banner-slide">
+          <img src="https://picsum.photos/id/404/1200/600" alt="">
+        </div>
+    </div>
+
+    <!-- 按钮 -->
+    <button class="banner-btn prev" id="prevBtn">‹</button>
+    <button class="banner-btn next" id="nextBtn">›</button>
+
+    <!-- 指示器 -->
+    <div class="banner-dots" id="bannerDots"></div>
+</div>
+<script>
+  'use strict';
+  // === DOM ===
+  const track = document.getElementById('bannerTrack');
+  const slides = document.querySelectorAll('.banner-slide');
+  const dots = document.getElementById('bannerDots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const banner = document.getElementById('banner');
+
+  // === 状态 ===
+  let curIndex = 0;
+  let total = slides.length;
+  let timer = null;
+
+  // 动态创建指示器
+  for(let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.classList.add('banner-dot');
+    dots.appendChild(dot);
+    if(i === 0) dot.classList.add('active');
+  }
+  const dotList = document.querySelectorAll('.banner-dot');
+
+  /**
+   * 移动到指定真图索引
+   * @param {number} index 真图索引 (0 ~ total-1)
+   * @param {boolean} animate 是否带动画
+   */
+  const moveTo = (index, animate = true) => {
+    curIndex = index;
+    // 轨道索引 = 真图索引 + 1 (前面有克隆的最后一张)
+    const trackIndex = index + 1;
+    track.style.transition = animate ? 'transform 0.5s ease' : 'none';
+    track.style.transform = `translateX(-${trackIndex * 100}%)`;
+
+    // 切换指示器
+    const activeDot = dots.querySelector('.active');
+    if (activeDot) activeDot.classList.remove('active');
+    dotList[index].classList.add('active');
+  };
+
+  // 指示器点击
+  dotList.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      moveTo(index);
+    });
+  });
+
+  // 初始化：克隆首尾实现无缝
+  const init = () => {
+    const firstSlide = slides[0].cloneNode(true);
+    const lastSlide = slides[slides.length - 1].cloneNode(true);
+    track.appendChild(firstSlide);
+    track.insertBefore(lastSlide, slides[0]);
+    // 初始定位到第一张真图 (轨道索引1)
+    moveTo(0, false);
+  };
+  init();
+
+  // 上一张
+  const prevBtnFn = () => {
+    if (curIndex === 0) {
+      // 在第一张真图，先滑到轨道索引0 (克隆的最后一张)
+      track.style.transition = 'transform 0.5s ease';
+      track.style.transform = 'translateX(0%)';
+      const handleEnd = () => {
+        track.removeEventListener('transitionend', handleEnd);
+        // 动画结束后瞬间跳到最后一张真图
+        moveTo(total - 1, false);
+      };
+      track.addEventListener('transitionend', handleEnd);
+    } else {
+      moveTo(curIndex - 1);
+    }
+  };
+
+  // 下一张
+  const nextBtnFn = () => {
+    if (curIndex === total - 1) {
+      // 在最后一张真图，先滑到轨道最后一位 (克隆的第一张)
+      const lastTrackIndex = total + 1;
+      track.style.transition = 'transform 0.5s ease';
+      track.style.transform = `translateX(-${lastTrackIndex * 100}%)`;
+      const handleEnd = () => {
+        track.removeEventListener('transitionend', handleEnd);
+        // 动画结束后瞬间跳到第一张真图
+        moveTo(0, false);
+      };
+      track.addEventListener('transitionend', handleEnd);
+    } else {
+      moveTo(curIndex + 1);
+    }
+  };
+
+  // 事件绑定
+  prevBtn.addEventListener('click', prevBtnFn);
+  nextBtn.addEventListener('click', nextBtnFn);
+
+  // 自动播放
+  const startAutoPlay = () => {
+    if (timer) clearInterval(timer);
+    timer = setInterval(() => {
+      nextBtnFn();
+    }, 3000);
+  };
+  const stopAutoPlay = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+
+  startAutoPlay();
+
+  // 悬停暂停
+  banner.addEventListener('mouseenter', stopAutoPlay);
+  banner.addEventListener('mouseleave', startAutoPlay);
+</script>
+</body>
+</html>
