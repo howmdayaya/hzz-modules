@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>苹果商城官网-滚动容器</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #ffffff;
+      color: #1d1d1f;
+      padding: 40px 0;
+    }
+
+    .gallery-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 21px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    /* 滚动容器 */
+    .carousel-wrapper {
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      /* 核心：滚动吸附 */
+      scroll-behavior: smooth;
+      padding-bottom: 20px;
+      /* 隐藏滚动条 */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      /* 确保所有卡片在纵向拉伸对齐 */
+      align-items: stretch;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 卡片基础样式 */
+    .card {
+      flex-shrink: 0;
+      /* 极其重要：防止卡片在 flex 容器中被压扁 */
+      scroll-snap-align: start;
+      /* 吸附位置 */
+      transition: width 0.3s ease;
+
+      /* 让卡片内部按列布局，并撑满容器高度 */
+      display: flex;
+      flex-direction: column;
+      height: auto;
+    }
+
+    /* 数据驱动的不同尺寸 */
+    .card--large {
+      width: 60%;
+    }
+
+    .card--medium {
+      width: 40%;
+    }
+
+    .card--small {
+      width: 25%;
+    }
+
+    /* 图片容器 */
+    .image-container {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      /* aspect-ratio: 4 / 3; */
+      height: 400px;
+      /* 桌面端固定高度，可根据视觉稿调整 */
+      background-color: #f5f5f7;
+      margin-bottom: 16px;
+    }
+
+    /* .card--large .image-container {
+      aspect-ratio: 16 / 9;
+    } */
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* 裁剪图片以适应固定高度，画面不拉伸 */
+      display: block;
+    }
+
+    /* 悬浮标签 */
+    .tag {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* 文字说明 */
+    .caption {
+      font-size: 14px;
+      color: #86868b;
+      line-height: 1.5;
+
+      flex-grow: 1;
+      /* 让文字区域自动填满剩余的纵向空间 */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    /* 控制按钮 */
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background-color: #e8e8ed;
+      color: #1d1d1f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #d2d2d7;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-btn:disabled:hover {
+      background-color: #e8e8ed;
+    }
+
+    /* 响应式：手机端统一高度和宽度 */
+    @media (max-width: 768px) {
+
+      .card--large,
+      .card--medium,
+      .card--small {
+        width: 85%;
+      }
+
+      .image-container {
+        height: 250px;
+        /* 移动端降低图片高度 */
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="gallery-section">
+    <h2 class="section-title">靓丽四色，美翻天。而且每款颜色的 MacBook Air 还都配有同色系的 MagSafe 磁吸充电线。</h2>
+
+    <div class="carousel-wrapper">
+      <!-- 卡片将被 JS 注入到这里 -->
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+
+    <div class="controls">
+      <button class="nav-btn" id="prevBtn" aria-label="上一个">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" aria-label="下一个">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
