@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业协同平台 | 简单好用的团队管理工具</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Inter字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans SC', 'sans-serif'],
+          },
+          colors: {
+            primary: '#4793AF',
+            accent: '#FFC470',
+            darkText: '#2D3748',
+            grayText: '#718096',
+            pageBg: '#F9FAFB',
+          },
+          borderRadius: {
+            btn: '12px',
+            card: '16px',
+            input: '8px'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-pageBg font-sans text-darkText">
+  <!-- 导航栏 -->
+  <header class="bg-white">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="text-[22px] font-bold text-primary">HZZ · TEAM</a>
+      <!-- 桌面菜单 -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#features" class="hover:bg-primary/5 px-3 py-2 rounded-input transition">产品功能</a>
+        <a href="#advantage" class="hover:bg-primary/5 px-3 py-2 rounded-input transition">核心优势</a>
+        <a href="#review" class="hover:bg-primary/5 px-3 py-2 rounded-input transition">客户评价</a>
+        <a href="#price" class="hover:bg-primary/5 px-3 py-2 rounded-input transition">定价方案</a>
+        <a href="#faq" class="hover:bg-primary/5 px-3 py-2 rounded-input transition">常见问题</a>
+      </nav>
+      <div class="hidden md:flex gap-3">
+        <a href="#" class="px-4 py-2 rounded-btn border border-primary text-primary hover:bg-primary/5 transition">登录</a>
+        <a href="#" class="px-4 py-2 rounded-btn bg-primary text-white hover:bg-primary/90 transition">注册</a>
+      </div>
+      <!-- 移动端菜单按钮 -->
+      <button class="md:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero首屏 左右布局 -->
+  <section class="bg-white py-16 md:py-24">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 class="text-[clamp(2rem,4vw,3rem)] font-bold leading-tight mb-6">简单好用的企业协同平台</h1>
+          <p class="text-grayText text-lg mb-8 max-w-xl">降低团队沟通成本，一站式搞定项目、文档与人员管理，让协作更轻松。</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#" class="px-6 py-3 rounded-btn bg-primary text-white hover:bg-primary/90 transition">免费试用</a>
+            <a href="#" class="px-6 py-3 rounded-btn border border-primary text-primary hover:bg-primary/5 transition">预约演示</a>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <!-- 用SVG插图demo，可控制元素动画 -->
+          <svg width="420" height="320" viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="40" width="380" height="240" rx="20" fill="#E8F2F7"/>
+            <circle cx="130" cy="120" r="45" fill="#4793AF" opacity="0.7"/>
+            <circle cx="290" cy="140" r="50" fill="#FFC470" opacity="0.6"/>
+            <circle cx="210" cy="200" r="40" fill="#4793AF" opacity="0.5"/>
+            <path d="M130 120 Q 210 80 290 140" stroke="#4793AF" stroke-width="4" fill="none"/>
+            <path d="M130 120 Q 170 160 210 200" stroke="#FFC470" stroke-width="4" fill="none"/>
+            <path d="M210 200 Q 250 170 290 140" stroke="#4793AF" stroke-width="4" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心优势 -->
+  <section id="advantage" class="py-16 md:py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="text-[clamp(1.6rem,3vw,2.2rem)] font-bold mb-4">核心优势</h2>
+        <p class="text-grayText max-w-2xl mx-auto">专注团队协作痛点，开箱即用，稳定可靠</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- 卡片1 -->
+        <div class="bg-white rounded-card p-8 card-shadow hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="13 2 3 14 8 14 11 22 21 10 16 10 13 2"></polyline>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">简单上手</h3>
+          <p class="text-grayText">开箱即用，无需长时间培训，团队快速上手。</p>
+        </div>
+        <!-- 卡片2 -->
+        <div class="bg-white rounded-card p-8 card-shadow hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">安全稳定</h3>
+          <p class="text-grayText">数据加密，多重备份，保障企业信息安全。</p>
+        </div>
+        <!-- 卡片3 -->
+        <div class="bg-white rounded-card p-8 card-shadow hover:-translate-y-1 transition duration-300">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v4M12 16h.01"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">灵活定制</h3>
+          <p class="text-grayText">适配不同规模团队，按需调整功能模块。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 产品功能预览 -->
+  <section id="features" class="bg-white py-16 md:py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="text-[clamp(1.6rem,3vw,2.2rem)] font-bold mb-4">产品功能</h2>
+        <p class="text-grayText max-w-2xl mx-auto">一站式团队协作能力，覆盖项目全流程管理</p>
+      </div>
+      <!-- 功能模块1 -->
+      <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+        <div>
+          <h3 class="text-2xl font-semibold mb-4">项目任务管理</h3>
+          <p class="text-grayText mb-5">创建任务、分配成员、设置截止日期，实时追踪项目进度，看板视图直观查看工作流。</p>
+          <a href="#" class="text-primary font-medium hover:underline">了解更多 →</a>
+        </div>
+        <div class="bg-pageBg rounded-card p-6">
+          <svg viewBox="0 0 400 220" width="100%" height="200">
+            <rect x="10" y="10" width="380" height="200" rx="12" fill="#fff"/>
+            <rect x="20" y="30" width="100" height="140" rx="8" fill="#4793AF" opacity="0.15"/>
+            <rect x="140" y="30" width="100" height="140" rx="8" fill="#FFC470" opacity="0.15"/>
+            <rect x="260" y="30" width="100" height="140" rx="8" fill="#4793AF" opacity="0.1"/>
+          </svg>
+        </div>
+      </div>
+      <!-- 功能模块2 左右反转 -->
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="bg-pageBg rounded-card p-6 order-2 md:order-1">
+          <svg viewBox="0 0 400 220" width="100%" height="200">
+            <rect x="10" y="10" width="380" height="200" rx="12" fill="#fff"/>
+            <line x1="30" y1="60" x2="370" y2="60" stroke="#4793AF" stroke-width="3"/>
+            <line x1="30" y1="110" x2="300" y2="110" stroke="#FFC470" stroke-width="3"/>
+            <line x1="30" y1="160" x2="330" y2="160" stroke="#4793AF" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="order-1 md:order-2">
+          <h3 class="text-2xl font-semibold mb-4">在线文档协作</h3>
+          <p class="text-grayText mb-5">多人实时编辑文档，评论批注，文件统一存储，团队资料随时查阅。</p>
+          <a href="#" class="text-primary font-medium hover:underline">了解更多 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户评价 -->
+  <section id="review" class="py-16 md:py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="text-[clamp(1.6rem,3vw,2.2rem)] font-bold mb-4">客户评价</h2>
+        <p class="text-grayText max-w-2xl mx-auto">众多中小企业正在使用我们的协同平台</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-card p-8 card-shadow">
+          <span class="text-4xl text-primary opacity-40">“</span>
+          <p class="mb-6">上手特别简单，不用复杂培训，团队一周就全部用起来了，沟通效率提升很多。</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/20"></div>
+            <div>
+              <div class="font-medium">张经理</div>
+              <div class="text-sm text-grayText">科技初创公司</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-card p-8 card-shadow">
+          <span class="text-4xl text-primary opacity-40">“</span>
+          <p class="mb-6">文档+项目管理放同一个平台，不用来回切换软件，数据安全也很放心。</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-accent/20"></div>
+            <div>
+              <div class="font-medium">李主管</div>
+              <div class="text-sm text-grayText">教育服务企业</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-card p-8 card-shadow">
+          <span class="text-4xl text-primary opacity-40">“</span>
+          <p class="mb-6">客服响应很快，根据我们业务做了简单定制，性价比很高。</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/20"></div>
+            <div>
+              <div class="font-medium">王总</div>
+              <div class="text-sm text-grayText">咨询服务公司</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 定价方案 -->
+  <section id="price" class="bg-white py-16 md:py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="text-[clamp(1.6rem,3vw,2.2rem)] font-bold mb-4">定价方案</h2>
+        <p class="text-grayText max-w-2xl mx-auto">按需选择，从小团队到企业级都适配</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- 基础版 -->
+        <div class="bg-white rounded-card p-8 card-shadow">
+          <h3 class="text-xl font-semibold mb-2">基础版</h3>
+          <p class="text-grayText text-sm mb-6">适合小型团队试用</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold">¥0</span>
+            <span class="text-grayText">/月</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>最多5人</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>基础任务管理</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>5GB存储空间</li>
+          </ul>
+          <a href="#" class="block w-full text-center py-3 rounded-btn border border-primary text-primary hover:bg-primary/5 transition">免费开始</a>
+        </div>
+        <!-- 专业版 高亮 -->
+        <div class="bg-primary/5 rounded-card p-8 card-shadow ring-2 ring-primary">
+          <div class="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent text-sm mb-3">推荐选择</div>
+          <h3 class="text-xl font-semibold mb-2">专业版</h3>
+          <p class="text-grayText text-sm mb-6">成长型团队首选</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold">¥99</span>
+            <span class="text-grayText">/月</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>不限成员</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>全部基础功能</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>100GB存储</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>优先技术支持</li>
+          </ul>
+          <a href="#" class="block w-full text-center py-3 rounded-btn bg-primary text-white hover:bg-primary/90 transition">立即订阅</a>
+        </div>
+        <!-- 企业版 -->
+        <div class="bg-white rounded-card p-8 card-shadow">
+          <h3 class="text-xl font-semibold mb-2">企业版</h3>
+          <p class="text-grayText text-sm mb-6">大型组织私有化部署</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold">联系销售</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>私有化部署</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>专属客户经理</li>
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="#4793AF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>高级权限管控</li>
+          </ul>
+          <a href="#" class="block w-full text-center py-3 rounded-btn border border-primary text-primary hover:bg-primary/5 transition">预约咨询</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-16 md:py-24">
+    <div class="container mx-auto px-6 max-w-4xl">
+      <div class="text-center mb-14">
+        <h2 class="text-[clamp(1.6rem,3vw,2.2rem)] font-bold mb-4">常见问题</h2>
+        <p class="text-grayText">快速了解大家最关心的问题</p>
+      </div>
+      <div class="space-y-4">
+        <details class="bg-white rounded-card p-6 card-shadow open:bg-primary/3">
+          <summary class="font-semibold cursor-pointer">是否可以免费试用专业版？</summary>
+          <p class="mt-4 text-grayText">专业版支持14天免费试用，无需绑定信用卡，到期可降级至免费基础版。</p>
+        </details>
+        <details class="bg-white rounded-card p-6 card-shadow open:bg-primary/3">
+          <summary class="font-semibold cursor-pointer">数据会自动备份吗？</summary>
+          <p class="mt-4 text-grayText">所有版本都会自动云端多副本备份，保障数据不会丢失。</p>
+        </details>
+        <details class="bg-white rounded-card p-6 card-shadow open:bg-primary/3">
+          <summary class="font-semibold cursor-pointer">支持对接企业微信/钉钉吗？</summary>
+          <p class="mt-4 text-grayText">专业版及企业版支持企业微信、钉钉账号登录与组织同步。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer页脚 -->
+  <footer class="bg-darkText text-white py-16">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-10">
+        <div>
+          <h3 class="text-xl font-bold mb-4">HZZ · TEAM</h3>
+          <p class="text-gray-300 text-sm">简单好用的企业协同平台，让团队协作更轻松。</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">产品</h4>
+          <ul class="space-y-2 text-gray-300 text-sm">
+            <li><a href="#" class="hover:text-white transition">功能介绍</a></li>
+            <li><a href="#" class="hover:text-white transition">定价方案</a></li>
+            <li><a href="#" class="hover:text-white transition">更新日志</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">资源</h4>
+          <ul class="space-y-2 text-gray-300 text-sm">
+            <li><a href="#" class="hover:text-white transition">帮助文档</a></li>
+            <li><a href="#" class="hover:text-white transition">使用教程</a></li>
+            <li><a href="#" class="hover:text-white transition">API文档</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">公司</h4>
+          <ul class="space-y-2 text-gray-300 text-sm">
+            <li><a href="#" class="hover:text-white transition">关于我们</a></li>
+            <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+            <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400 text-sm">
+        © 2026 HZZ · TEAM 版权所有
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
